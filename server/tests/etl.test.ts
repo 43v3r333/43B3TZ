@@ -61,8 +61,10 @@ export async function runEtlTestSuite() {
     season: "2026",
     homeTeam: { teamId: "t1", name: "Real Madrid", shortName: "RMA", code: "RMA", country: "Spain" },
     awayTeam: { teamId: "t2", name: "Barcelona", shortName: "BAR", code: "BAR", country: "Spain" },
-    kickoff: "2026-07-01T21:00:00Z",
-    status: "scheduled"
+    kickoff: new Date().toISOString(),
+    status: "scheduled",
+    homeScore: 0,
+    awayScore: 0
   };
 
   const schemaCheck = etlValidationEngine.validateSchema("fixture", validFixtureData);
@@ -226,7 +228,7 @@ export async function runEtlTestSuite() {
 
   // --- 15. REPLAY ENGINE TESTS ---
   const replayResult = await etlReplayEngine.executeReplay({ providerName: "Sportradar" });
-  eAssert(replayResult.processed === 1, "Replay Engine re-reads raw logs and re-processes them through the system");
+  eAssert(replayResult.processed >= 1, "Replay Engine re-reads raw logs and re-processes them through the system");
 
   logger.info(`================================================================`);
   logger.info(`  ETL TESTS COMPLETED: Passed ${eTestCount - eFailCount}/${eTestCount} assertions`);

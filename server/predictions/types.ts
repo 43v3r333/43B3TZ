@@ -26,7 +26,8 @@ export type ModelDeploymentRole =
   | "fallback"
   | "experimental"
   | "shadow"
-  | "canary";
+  | "canary"
+  | "challenger";
 
 export interface ModelMetadata {
   modelId: string;

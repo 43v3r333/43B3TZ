@@ -7,6 +7,19 @@ import { container } from "./core/di";
 import { db } from "./core/db";
 import { redis } from "./core/redis";
 import { authService } from "./services/auth";
+
+// Import Repositories and Services for DI Registration
+import { predictionRepository } from "./repositories/prediction";
+import { researchRepository } from "./repositories/research";
+import { matchRepository } from "./repositories/match";
+import { oddsRepository } from "./repositories/odds";
+import { modelRepository } from "./repositories/model";
+import { auditRepository } from "./repositories/audit";
+import { PredictionService } from "./services/prediction";
+import { ResearchService } from "./services/research";
+import { OddsService } from "./services/odds";
+import { securityHeaders, corsPolicy, rateLimiter } from "./middleware/security";
+
 import healthRouter from "./routes/health";
 import authRouter from "./routes/auth";
 import providerRouter from "./routes/providers";
@@ -23,6 +36,9 @@ import researchRouter from "./routes/research";
 import { MarketScheduler } from "./market/scheduler";
 
 import { errorHandler } from "./middleware/errorHandler";
+import { correlationMiddleware } from "./logging/Correlation";
+import { requestLoggerMiddleware } from "./logging/RequestLogger";
+import { responseFormatterMiddleware } from "./middleware/responseFormatter";
 
 const logger = createLogger("ServerBootstrap");
 
@@ -32,7 +48,21 @@ async function startServer() {
   container.register("db", db);
   container.register("redis", redis);
   container.register("authService", authService);
-  logger.info("Successfully registered core services in dependency container");
+
+  // Register enterprise repositories
+  container.register("PredictionRepository", predictionRepository);
+  container.register("ResearchRepository", researchRepository);
+  container.register("MatchRepository", matchRepository);
+  container.register("OddsRepository", oddsRepository);
+  container.register("ModelRepository", modelRepository);
+  container.register("AuditRepository", auditRepository);
+
+  // Register enterprise services
+  container.register("PredictionService", new PredictionService(predictionRepository, modelRepository));
+  container.register("ResearchService", new ResearchService(researchRepository));
+  container.register("OddsService", new OddsService(matchRepository, oddsRepository));
+
+  logger.info("Successfully registered core services and repositories in dependency container");
 
   // 2. Pre-seed default Admin Account if not existing
   try {
@@ -60,11 +90,15 @@ async function startServer() {
   const app = express();
   app.use(express.json());
 
-  // Set up API request logging middleware
-  app.use((req, res, next) => {
-    logger.debug(`HTTP INGRESS: ${req.method} ${req.url}`);
-    next();
-  });
+  // Global Enterprise Security Middlewares
+  app.use(securityHeaders);
+  app.use(corsPolicy);
+  app.use(rateLimiter);
+
+  // Set up API request correlation, logging, and response formatting middleware
+  app.use(correlationMiddleware);
+  app.use(requestLoggerMiddleware);
+  app.use(responseFormatterMiddleware);
 
   // 3. Register REST routers
   app.use("/api", healthRouter);

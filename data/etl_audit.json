@@ -1,0 +1,196 @@
+[
+  {
+    "auditId": "audit-fixture-1783084425294-796",
+    "timestamp": "2026-07-03T13:13:45.294Z",
+    "landingId": "land-1",
+    "providerName": "Sportradar",
+    "entityType": "fixture",
+    "checksum": "somechecksum",
+    "transformationChain": [
+      "normalization"
+    ],
+    "qualityScore": 95,
+    "storageDestination": "db",
+    "durationMs": 45,
+    "operator": "test_runner",
+    "pipelineVersion": "v1.0.0",
+    "stagesStatus": {}
+  },
+  {
+    "auditId": "audit-fixture-1783084425312-6068",
+    "timestamp": "2026-07-03T13:13:45.312Z",
+    "landingId": "land-fixture-91d0d0ea67e3-1783084425310",
+    "providerName": "Sportradar",
+    "entityType": "fixture",
+    "checksum": "91d0d0ea67e37863a7ddb47a61f7c74359a5502b7d453242d002d48ed8652948",
+    "transformationChain": [
+      "normalization",
+      "transformation"
+    ],
+    "qualityScore": 100,
+    "storageDestination": "etl_storage[curated][fixture][fix-valid-101]",
+    "durationMs": 2,
+    "operator": "background_worker",
+    "pipelineVersion": "v1.0.0",
+    "stagesStatus": {
+      "landing": {
+        "durationMs": 1,
+        "success": true
+      },
+      "validation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "normalization": {
+        "durationMs": 0,
+        "success": true
+      },
+      "schemaValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "businessValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "qualityScoring": {
+        "durationMs": 0,
+        "success": true
+      },
+      "deduplication": {
+        "durationMs": 0,
+        "success": true
+      },
+      "enrichment": {
+        "durationMs": 0,
+        "success": true
+      },
+      "transformation": {
+        "durationMs": 1,
+        "success": true
+      },
+      "storage": {
+        "durationMs": 0,
+        "success": true
+      }
+    }
+  },
+  {
+    "auditId": "audit-fixture-1783084425314-1939",
+    "timestamp": "2026-07-03T13:13:45.314Z",
+    "landingId": "land-fixture-91d0d0ea67e3-1783084425313",
+    "providerName": "Sportradar",
+    "entityType": "fixture",
+    "checksum": "91d0d0ea67e37863a7ddb47a61f7c74359a5502b7d453242d002d48ed8652948",
+    "transformationChain": [
+      "normalization",
+      "transformation"
+    ],
+    "qualityScore": 100,
+    "storageDestination": "etl_storage[curated][fixture][fix-valid-101]",
+    "durationMs": 1,
+    "operator": "integration_tester",
+    "pipelineVersion": "v1.0.0",
+    "stagesStatus": {
+      "landing": {
+        "durationMs": 0,
+        "success": true
+      },
+      "validation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "normalization": {
+        "durationMs": 0,
+        "success": true
+      },
+      "schemaValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "businessValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "qualityScoring": {
+        "durationMs": 0,
+        "success": true
+      },
+      "deduplication": {
+        "durationMs": 0,
+        "success": true
+      },
+      "enrichment": {
+        "durationMs": 0,
+        "success": true
+      },
+      "transformation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "storage": {
+        "durationMs": 0,
+        "success": true
+      }
+    }
+  },
+  {
+    "auditId": "audit-fixture-1783084425317-3695",
+    "timestamp": "2026-07-03T13:13:45.317Z",
+    "landingId": "land-fixture-42991d24a35a-1783084425315",
+    "providerName": "API-Football",
+    "entityType": "fixture",
+    "checksum": "42991d24a35af4913b05a77630ed2269bd5852bf0346cf080059c9339653c47e",
+    "transformationChain": [
+      "normalization",
+      "transformation"
+    ],
+    "qualityScore": 74,
+    "storageDestination": "etl_storage[curated][fixture][fix-valid-101]",
+    "durationMs": 2,
+    "operator": "integration_tester",
+    "pipelineVersion": "v1.0.0",
+    "stagesStatus": {
+      "landing": {
+        "durationMs": 1,
+        "success": true
+      },
+      "validation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "normalization": {
+        "durationMs": 0,
+        "success": true
+      },
+      "schemaValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "businessValidation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "qualityScoring": {
+        "durationMs": 0,
+        "success": true
+      },
+      "deduplication": {
+        "durationMs": 0,
+        "success": true
+      },
+      "enrichment": {
+        "durationMs": 0,
+        "success": true
+      },
+      "transformation": {
+        "durationMs": 0,
+        "success": true
+      },
+      "storage": {
+        "durationMs": 1,
+        "success": true
+      }
+    }
+  }
+]

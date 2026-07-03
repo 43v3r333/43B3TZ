@@ -1,0 +1,91 @@
+[
+  {
+    "modelId": "model_1783084425327_lightgbm",
+    "version": "1.0.0",
+    "family": "lightgbm",
+    "trainingDatasetId": "ds_1783084425326_889",
+    "featuresUsed": [
+      "feat_elo_rating"
+    ],
+    "hyperparameters": {
+      "learningRate": 0.05,
+      "maxDepth": 4,
+      "weights": {
+        "feat_elo_rating": -1.3499999999999854
+      }
+    },
+    "metrics": {
+      "accuracy": 0.5,
+      "precision": 0.5,
+      "recall": 1,
+      "f1": 0.6666666666666666,
+      "rocAuc": 1,
+      "prAuc": 0.5,
+      "logLoss": 0.7240769841801067,
+      "brierScore": 0.2649962877984055,
+      "calibrationError": 0.1224593312018546,
+      "expectedValue": 0.836255027045471,
+      "profitSimulation": 0,
+      "sharpeRatio": 0,
+      "maxDrawdown": 0,
+      "predictionStability": 1,
+      "confidenceReliability": 0.5,
+      "featureImportance": {
+        "feat_elo_rating": 1
+      },
+      "inferenceLatencyMs": 1.2,
+      "trainingDurationMs": 1
+    },
+    "calibration": {
+      "method": "platt_scaling",
+      "expectedCalibrationError": 0.3775406687981454,
+      "maximumCalibrationError": 0.3775406687981454,
+      "brierScore": 0.1425369565965509,
+      "reliabilityDiagram": [
+        {
+          "binMidpoint": 0.1,
+          "empiricalProb": 0,
+          "predictedProb": 0.1,
+          "count": 0
+        },
+        {
+          "binMidpoint": 0.3,
+          "empiricalProb": 0,
+          "predictedProb": 0.3,
+          "count": 0
+        },
+        {
+          "binMidpoint": 0.5,
+          "empiricalProb": 0,
+          "predictedProb": 0.5,
+          "count": 0
+        },
+        {
+          "binMidpoint": 0.7,
+          "empiricalProb": 1,
+          "predictedProb": 0.6224593312018546,
+          "count": 1
+        },
+        {
+          "binMidpoint": 0.9,
+          "empiricalProb": 0,
+          "predictedProb": 0.9,
+          "count": 0
+        }
+      ],
+      "parameters": {
+        "alpha": 0,
+        "beta": -0.5
+      }
+    },
+    "artifactPath": "./artifacts/model_1783084425327_lightgbm.json",
+    "gitRevision": "git_rev_v1.2.0_release",
+    "experimentId": "exp_1783084425327_129",
+    "championStatus": "champion",
+    "approvalStatus": "approved",
+    "deploymentStatus": "production",
+    "createdAt": "2026-07-03T13:13:45.327Z",
+    "approvedBy": "ADMIN_UNIT_TEST",
+    "notes": "Fitted model passed integration parameters."
+  }
+]

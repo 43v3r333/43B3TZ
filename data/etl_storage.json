@@ -1,0 +1,249 @@
+{
+  "raw": {},
+  "normalized": {},
+  "curated": {
+    "competition": {},
+    "league": {},
+    "season": {},
+    "venue": {},
+    "team": {},
+    "player": {},
+    "fixture": {
+      "fix-val-1": {
+        "curatedId": "fix-val-1",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-1",
+          "kickoff": "2026-07-03T03:13:45.321Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 1,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.321Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-2": {
+        "curatedId": "fix-val-2",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-2",
+          "kickoff": "2026-07-03T04:13:45.321Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 2,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.321Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-3": {
+        "curatedId": "fix-val-3",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-3",
+          "kickoff": "2026-07-03T05:13:45.321Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 1,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.321Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-4": {
+        "curatedId": "fix-val-4",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-4",
+          "kickoff": "2026-07-03T06:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 2,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-5": {
+        "curatedId": "fix-val-5",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-5",
+          "kickoff": "2026-07-03T07:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 1,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-6": {
+        "curatedId": "fix-val-6",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-6",
+          "kickoff": "2026-07-03T08:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 2,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-7": {
+        "curatedId": "fix-val-7",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-7",
+          "kickoff": "2026-07-03T09:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 1,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-8": {
+        "curatedId": "fix-val-8",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-8",
+          "kickoff": "2026-07-03T10:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 2,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-9": {
+        "curatedId": "fix-val-9",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-9",
+          "kickoff": "2026-07-03T11:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 1,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      },
+      "fix-val-10": {
+        "curatedId": "fix-val-10",
+        "entityType": "fixture",
+        "data": {
+          "fixtureId": "fix-val-10",
+          "kickoff": "2026-07-03T12:13:45.322Z",
+          "homeTeam": {
+            "teamId": "team-test-1"
+          },
+          "awayTeam": {
+            "teamId": "team-test-2"
+          },
+          "homeScore": 2,
+          "awayScore": 1
+        },
+        "enrichment": {},
+        "qualityScore": 95,
+        "version": 1,
+        "updatedAt": "2026-07-03T13:13:45.322Z",
+        "ingestionChain": [
+          "UnitTesting"
+        ]
+      }
+    },
+    "odds": {},
+    "statistics": {},
+    "weather": {},
+    "ranking": {},
+    "news": {}
+  }
+}

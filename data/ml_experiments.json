@@ -1,0 +1,49 @@
+[
+  {
+    "experimentId": "exp_1783084425325_718",
+    "name": "Unit_Testing_Experiment",
+    "datasetVersion": "ds_1783084425323_343",
+    "featureVersion": "feat_v1",
+    "modelVersion": "model_v1_lgbm",
+    "hyperparameters": {
+      "max_depth": 6,
+      "lr": 0.05
+    },
+    "metrics": {
+      "accuracy": 0.85,
+      "logLoss": 0.35
+    },
+    "durationMs": 120,
+    "hardwareMetadata": "CPU x64, Node.js Sandbox V8",
+    "randomSeed": 42,
+    "repositoryBaseline": "git_rev_v1.2.0_release",
+    "notes": "Fitted using default tree counts",
+    "approvalStatus": "draft",
+    "createdAt": "2026-07-03T13:13:45.325Z"
+  },
+  {
+    "experimentId": "exp_1783084425327_129",
+    "name": "Exp_Test_Model_Run_lightgbm",
+    "datasetVersion": "ds_1783084425326_889",
+    "featureVersion": "v1.0.0_feat",
+    "modelVersion": "model_v1.0.0_lightgbm",
+    "hyperparameters": {
+      "learningRate": 0.05,
+      "maxDepth": 4
+    },
+    "metrics": {
+      "accuracy": 0.5,
+      "f1": 0.6666666666666666,
+      "logLoss": 0.7240769841801067,
+      "brierScore": 0.2649962877984055,
+      "ece": 0.1224593312018546
+    },
+    "durationMs": 1,
+    "hardwareMetadata": "CPU x64, Node.js Sandbox V8",
+    "randomSeed": 42,
+    "repositoryBaseline": "git_rev_v1.2.0_release",
+    "notes": "Trained using optimal grid hyperparams: lr=0.05, depth=4",
+    "approvalStatus": "draft",
+    "createdAt": "2026-07-03T13:13:45.327Z"
+  }
+]

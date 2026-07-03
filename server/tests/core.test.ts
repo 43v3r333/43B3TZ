@@ -1,13 +1,26 @@
 import { container } from "../core/di";
 import { config } from "../core/config";
-import { RelationalDB, DBUser, DBFixture } from "../core/db";
-import { RedisBroker } from "../core/redis";
-import { AuthService } from "../services/auth";
+import { RelationalDB, DBUser, DBFixture, db } from "../core/db";
+import { RedisBroker, redis } from "../core/redis";
+import { AuthService, authService } from "../services/auth";
 import { createLogger } from "../core/logger";
 import { runProviderTestSuite } from "./provider.test";
 import { runEtlTestSuite } from "./etl.test";
 import { runMLTestSuite } from "./ml.test";
 import { runPredictionTestSuite } from "./predictions.test";
+import { runObservabilityTestSuite } from "./observability.test";
+import { runEnterpriseTestSuite } from "./enterprise.test";
+
+// Repositories and Services for container registration
+import { predictionRepository } from "../repositories/prediction";
+import { researchRepository } from "../repositories/research";
+import { matchRepository } from "../repositories/match";
+import { oddsRepository } from "../repositories/odds";
+import { modelRepository } from "../repositories/model";
+import { auditRepository } from "../repositories/audit";
+import { PredictionService } from "../services/prediction";
+import { ResearchService } from "../services/research";
+import { OddsService } from "../services/odds";
 
 const logger = createLogger("TestRunner");
 
@@ -38,6 +51,20 @@ export async function runTestSuite() {
   container.register("config", config);
   assert(container.has("config"), "DI Container holds config service");
   assert(container.resolve("config") === config, "DI Container resolves exact config reference");
+
+  // Re-register everything required by downstream services and routes
+  container.register("db", db);
+  container.register("redis", redis);
+  container.register("authService", authService);
+  container.register("PredictionRepository", predictionRepository);
+  container.register("ResearchRepository", researchRepository);
+  container.register("MatchRepository", matchRepository);
+  container.register("OddsRepository", oddsRepository);
+  container.register("ModelRepository", modelRepository);
+  container.register("AuditRepository", auditRepository);
+  container.register("PredictionService", new PredictionService(predictionRepository, modelRepository));
+  container.register("ResearchService", new ResearchService(researchRepository));
+  container.register("OddsService", new OddsService(matchRepository, oddsRepository));
 
   // --- 3. CRYPTOGRAPHIC & JWT TESTS ---
   const auth = new AuthService();
@@ -130,6 +157,12 @@ export async function runTestSuite() {
 
   // --- SPRINT 4 PREDICTION FACTORY TESTS ---
   await runPredictionTestSuite();
+
+  // --- SPRINT 5 ENTERPRISE OBSERVABILITY TESTS ---
+  await runObservabilityTestSuite();
+
+  // --- SPRINT 6 HIGH-ASSURANCE ENTERPRISE SECURITY & PLATFORM STABILITY TESTS ---
+  await runEnterpriseTestSuite();
 
   // --- SUMMARY RESULTS ---
   logger.info(`================================================================`);

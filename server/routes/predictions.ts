@@ -1,74 +1,96 @@
 import { Router } from "express";
-import { predictionModelRegistry } from "../predictions/registry/modelRegistry";
-import { predictionHistoryStore } from "../predictions/history/predictionHistory";
-import { PredictionFactory } from "../predictions/factory/predictionFactory";
-import { modelPipelines } from "../predictions/models/predictionModels";
+import { container } from "../core/di";
+import { IPredictionRepository, IModelRepository } from "../repositories/types";
+import { PredictionValidator } from "../validators/prediction";
 import { PredictionMarketType, ModelDeploymentRole } from "../predictions/types";
+import { requirePermission } from "../middleware/security";
+import { modelPipelines } from "../predictions/models/predictionModels";
+import { PredictionService } from "../services/prediction";
 
 const router = Router();
 
+// Retrieve from container (DI)
+const getModelRepo = () => container.resolve<IModelRepository>("ModelRepository");
+const getPredictionRepo = () => container.resolve<IPredictionRepository>("PredictionRepository");
+const getPredictionService = () => container.resolve<PredictionService>("PredictionService");
+
 // 1. Fetch all models in the prediction registry
-router.get("/models", (req, res) => {
+router.get("/models", requirePermission("Prediction.Read"), (req, res, next) => {
   try {
-    const models = predictionModelRegistry.getAllModels();
+    const models = getModelRepo().getAllModels();
     res.status(200).json({ success: true, models });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 2. Fetch historical logged predictions
-router.get("/history", (req, res) => {
+router.get("/history", requirePermission("Prediction.Read"), (req, res, next) => {
   try {
-    const history = predictionHistoryStore.getAllRecords();
+    const history = getPredictionRepo().getAllRecords();
     res.status(200).json({ success: true, history });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 3. Fetch summary metrics & performance aggregates
-router.get("/metrics", (req, res) => {
+router.get("/metrics", requirePermission("Prediction.Read"), (req, res, next) => {
   try {
     const marketType = req.query.marketType as PredictionMarketType | undefined;
-    const metrics = predictionHistoryStore.calculatePerformanceMetrics({ marketType });
+    const historyStore = (getPredictionRepo() as any).predictionHistoryStore || require("../predictions/history/predictionHistory").predictionHistoryStore;
+    const metrics = historyStore.calculatePerformanceMetrics({ marketType });
     res.status(200).json({ success: true, metrics });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 4. Trigger Prediction Inference
-router.post("/inference", (req, res) => {
+router.post("/inference", requirePermission("Prediction.Write"), async (req, res, next) => {
   try {
-    const { marketType, entityId, featuresOverride, leagueId, competitionId } = req.body;
-    if (!marketType || !entityId) {
-      return res.status(400).json({ success: false, error: "marketType and entityId are required" });
+    const validation = PredictionValidator.validateInference(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ success: false, errors: validation.errors });
     }
 
-    const response = PredictionFactory.executeInference({
-      marketType,
-      entityId,
-      featuresOverride,
-      leagueId,
-      competitionId
-    });
-
-    res.status(200).json({ success: true, response });
+    const { marketType, entityId, featuresOverride, leagueId, competitionId } = validation.data!;
+    
+    // Choose async vs sync processing based on query flag
+    if (req.query.async === "true") {
+      const response = await getPredictionService().executeInferenceAsync(
+        marketType,
+        entityId,
+        featuresOverride,
+        leagueId,
+        competitionId
+      );
+      res.status(202).json({ success: true, ...response });
+    } else {
+      const response = getPredictionService().executeInferenceSync(
+        marketType,
+        entityId,
+        featuresOverride,
+        leagueId,
+        competitionId
+      );
+      res.status(200).json({ success: true, response });
+    }
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 5. Trigger training pipeline of a prediction model
-router.post("/train", (req, res) => {
+router.post("/train", requirePermission("Admin.Configure"), (req, res, next) => {
   try {
-    const { marketType, datasetId, features } = req.body;
-    if (!marketType) {
-      return res.status(400).json({ success: false, error: "marketType is required" });
+    const validation = PredictionValidator.validateTrain(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ success: false, errors: validation.errors });
     }
 
-    const pipeline = modelPipelines[marketType as PredictionMarketType];
+    const { marketType, datasetId, features } = validation.data!;
+    const pipeline = modelPipelines[marketType];
     if (!pipeline) {
       return res.status(400).json({ success: false, error: `Invalid or unsupported market: ${marketType}` });
     }
@@ -81,7 +103,7 @@ router.post("/train", (req, res) => {
     const newModel = {
       modelId: newModelId,
       name: `Challenger ${marketType.replace(/_/g, " ").toUpperCase()} (${trainResult.newVersion})`,
-      marketType: marketType as PredictionMarketType,
+      marketType: marketType,
       family: "lightgbm" as any,
       version: trainResult.newVersion,
       datasetId: datasetId || "ds_default_temporal_v1",
@@ -100,56 +122,59 @@ router.post("/train", (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    predictionModelRegistry.registerModel(newModel);
+    getModelRepo().registerModel(newModel);
 
     res.status(200).json({ success: true, model: newModel });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 6. Promote challenger model to Champion, or update deployment roles
-router.post("/promote", (req, res) => {
+router.post("/promote", requirePermission("Admin.Configure"), (req, res, next) => {
   try {
-    const { modelId, role } = req.body;
-    if (!modelId || !role) {
-      return res.status(400).json({ success: false, error: "modelId and role are required" });
+    const validation = PredictionValidator.validatePromote(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ success: false, errors: validation.errors });
     }
 
-    const updated = predictionModelRegistry.updateModelRole(modelId, role as ModelDeploymentRole);
+    const { modelId, role } = validation.data!;
+    const updated = getModelRepo().updateModelRole(modelId, role);
     res.status(200).json({ success: true, model: updated });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 7. Rollback active role to target fallback
-router.post("/rollback", (req, res) => {
+router.post("/rollback", requirePermission("Admin.Configure"), (req, res, next) => {
   try {
-    const { marketType, role, fallbackModelId } = req.body;
-    if (!marketType || !role || !fallbackModelId) {
-      return res.status(400).json({ success: false, error: "marketType, role, and fallbackModelId are required" });
+    const validation = PredictionValidator.validateRollback(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ success: false, errors: validation.errors });
     }
 
-    predictionModelRegistry.rollbackModel(marketType as PredictionMarketType, role as ModelDeploymentRole, fallbackModelId);
+    const { marketType, role, fallbackModelId } = validation.data!;
+    getModelRepo().rollbackModel(marketType, role, fallbackModelId);
     res.status(200).json({ success: true, message: `Successfully rolled back ${marketType} ${role} role to ${fallbackModelId}` });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
 // 8. Resolve prediction with real outcome
-router.post("/resolve", (req, res) => {
+router.post("/resolve", requirePermission("Prediction.Write"), (req, res, next) => {
   try {
-    const { predictionId, actualOutcome } = req.body;
-    if (!predictionId || !actualOutcome) {
-      return res.status(400).json({ success: false, error: "predictionId and actualOutcome are required" });
+    const validation = PredictionValidator.validateResolve(req.body);
+    if (!validation.success) {
+      return res.status(400).json({ success: false, errors: validation.errors });
     }
 
-    const resolved = predictionHistoryStore.resolvePrediction(predictionId, actualOutcome);
+    const { predictionId, actualOutcome } = validation.data!;
+    const resolved = getPredictionService().resolvePrediction(predictionId, actualOutcome);
     res.status(200).json({ success: true, record: resolved });
   } catch (err: any) {
-    res.status(500).json({ success: false, error: err.message });
+    next(err);
   }
 });
 
