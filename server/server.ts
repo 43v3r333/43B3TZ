@@ -22,6 +22,8 @@ import decisionRouter from "./routes/decision";
 import researchRouter from "./routes/research";
 import { MarketScheduler } from "./market/scheduler";
 
+import { errorHandler } from "./middleware/errorHandler";
+
 const logger = createLogger("ServerBootstrap");
 
 async function startServer() {
@@ -114,6 +116,9 @@ async function startServer() {
       res.status(400).json({ error: err.message });
     }
   });
+
+  // Centralized Domain & Exception Error Handling Middleware
+  app.use(errorHandler);
 
   // 4. Vite middleware for development vs static asset serve for production
   if (process.env.NODE_ENV !== "production") {
