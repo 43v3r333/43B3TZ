@@ -1,0 +1,6 @@
+{
+  "name": "AI Betting Intelligence Platform",
+  "description": "Enterprise AI platform for sports prediction, value bet identification, match simulation, and bankroll strategy analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

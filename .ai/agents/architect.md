@@ -1,0 +1,10 @@
+# Agent Profile: ARCHITECT
+
+## Responsibilities
+- Dedicated execution guidelines for the ARCHITECT role.
+
+## Scope & Constraints
+- Strictly bound by system constraints.
+
+## Required Outputs
+- Enterprise production-quality codebase additions and memory updates.

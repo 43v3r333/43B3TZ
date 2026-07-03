@@ -1,0 +1,72 @@
+{
+  "users": [
+    {
+      "user_id": "usr-unit-01",
+      "email": "trader.one@platform.internal",
+      "password_hash": "cebfb9de32b0af6ec4695af3a1f48bc0:cc86e4195a01b6c9f84244ba9a441cee0c7c081240c5df4b0c4b4e5c2f42543463f111186e60ccfaae11da686d3f53d1375a8cc818ef06f4fbe8f8b873db023d",
+      "role": "admin",
+      "created_at": "2026-07-01T08:34:35.286Z"
+    }
+  ],
+  "fixtures": [
+    {
+      "fixture_id": "fix-101",
+      "league": "English Premier League",
+      "home_team": "Arsenal",
+      "away_team": "Chelsea",
+      "kickoff": "2026-07-01T19:00:00Z",
+      "status": "scheduled"
+    },
+    {
+      "fixture_id": "fix-102",
+      "league": "English Premier League",
+      "home_team": "Manchester City",
+      "away_team": "Liverpool",
+      "kickoff": "2026-07-02T19:30:00Z",
+      "status": "scheduled"
+    },
+    {
+      "fixture_id": "fix-103",
+      "league": "South African Premier Division",
+      "home_team": "Mamelodi Sundowns",
+      "away_team": "Kaizer Chiefs",
+      "kickoff": "2026-07-03T18:00:00Z",
+      "status": "scheduled"
+    }
+  ],
+  "odds_timeseries": [
+    {
+      "time": "2026-06-30T22:00:00Z",
+      "fixture_id": "fix-101",
+      "bookmaker": "Betway SA",
+      "home_win": 1.85,
+      "draw": 3.6,
+      "away_win": 4.2
+    },
+    {
+      "time": "2026-06-30T22:05:00Z",
+      "fixture_id": "fix-101",
+      "bookmaker": "Sportingbet",
+      "home_win": 1.87,
+      "draw": 3.55,
+      "away_win": 4.15
+    },
+    {
+      "time": "2026-06-30T22:00:00Z",
+      "fixture_id": "fix-102",
+      "bookmaker": "Betway SA",
+      "home_win": 2.1,
+      "draw": 3.4,
+      "away_win": 3.1
+    }
+  ],
+  "slips": [],
+  "bankroll": [
+    {
+      "user_id": "usr-c6a7b379c1cad4b8",
+      "balance": 10000,
+      "currency": "USD",
+      "last_updated": "2026-07-01T08:29:32.520Z"
+    }
+  ]
+}
