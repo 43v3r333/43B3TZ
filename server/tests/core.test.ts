@@ -10,6 +10,7 @@ import { runMLTestSuite } from "./ml.test";
 import { runPredictionTestSuite } from "./predictions.test";
 import { runObservabilityTestSuite } from "./observability.test";
 import { runEnterpriseTestSuite } from "./enterprise.test";
+import { runMlIntelligenceTestSuite } from "./ml_intelligence.test";
 
 // Repositories and Services for container registration
 import { predictionRepository } from "../repositories/prediction";
@@ -163,6 +164,9 @@ export async function runTestSuite() {
 
   // --- SPRINT 6 HIGH-ASSURANCE ENTERPRISE SECURITY & PLATFORM STABILITY TESTS ---
   await runEnterpriseTestSuite();
+
+  // --- SPRINT 7 ENTERPRISE AI & ML INTELLIGENCE PLATFORM TESTS ---
+  await runMlIntelligenceTestSuite();
 
   // --- SUMMARY RESULTS ---
   logger.info(`================================================================`);

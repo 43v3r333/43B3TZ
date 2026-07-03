@@ -1,6 +1,6 @@
 [
   {
-    "dlqId": "dlq-fixture-1783084425296-3459",
+    "dlqId": "dlq-fixture-1783088226087-4329",
     "providerName": "API-Football",
     "entityType": "fixture",
     "rawPayload": {
@@ -10,9 +10,9 @@
       "Required fixtureId is missing"
     ],
     "checksum": "checksum-fail",
-    "timestamp": "2026-07-03T13:13:45.296Z",
+    "timestamp": "2026-07-03T14:17:06.087Z",
     "resolved": true,
-    "resolvedAt": "2026-07-03T13:13:45.306Z",
+    "resolvedAt": "2026-07-03T14:17:06.087Z",
     "resolvedReason": "Manual data patch applied"
   }
 ]

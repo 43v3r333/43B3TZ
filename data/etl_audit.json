@@ -1,7 +1,7 @@
 [
   {
-    "auditId": "audit-fixture-1783084425294-796",
-    "timestamp": "2026-07-03T13:13:45.294Z",
+    "auditId": "audit-fixture-1783088226086-9364",
+    "timestamp": "2026-07-03T14:17:06.086Z",
     "landingId": "land-1",
     "providerName": "Sportradar",
     "entityType": "fixture",
@@ -17,19 +17,19 @@
     "stagesStatus": {}
   },
   {
-    "auditId": "audit-fixture-1783084425312-6068",
-    "timestamp": "2026-07-03T13:13:45.312Z",
-    "landingId": "land-fixture-91d0d0ea67e3-1783084425310",
+    "auditId": "audit-fixture-1783088226093-8044",
+    "timestamp": "2026-07-03T14:17:06.093Z",
+    "landingId": "land-fixture-34ecf2f9f064-1783088226090",
     "providerName": "Sportradar",
     "entityType": "fixture",
-    "checksum": "91d0d0ea67e37863a7ddb47a61f7c74359a5502b7d453242d002d48ed8652948",
+    "checksum": "34ecf2f9f064872d56177c00bf043aa9c8d831974d6c734989e6af6eb44bfb3f",
     "transformationChain": [
       "normalization",
       "transformation"
     ],
     "qualityScore": 100,
     "storageDestination": "etl_storage[curated][fixture][fix-valid-101]",
-    "durationMs": 2,
+    "durationMs": 4,
     "operator": "background_worker",
     "pipelineVersion": "v1.0.0",
     "stagesStatus": {
@@ -54,7 +54,7 @@
         "success": true
       },
       "qualityScoring": {
-        "durationMs": 0,
+        "durationMs": 1,
         "success": true
       },
       "deduplication": {
@@ -66,34 +66,34 @@
         "success": true
       },
       "transformation": {
-        "durationMs": 1,
+        "durationMs": 0,
         "success": true
       },
       "storage": {
-        "durationMs": 0,
+        "durationMs": 2,
         "success": true
       }
     }
   },
   {
-    "auditId": "audit-fixture-1783084425314-1939",
-    "timestamp": "2026-07-03T13:13:45.314Z",
-    "landingId": "land-fixture-91d0d0ea67e3-1783084425313",
+    "auditId": "audit-fixture-1783088226108-8406",
+    "timestamp": "2026-07-03T14:17:06.108Z",
+    "landingId": "land-fixture-34ecf2f9f064-1783088226104",
     "providerName": "Sportradar",
     "entityType": "fixture",
-    "checksum": "91d0d0ea67e37863a7ddb47a61f7c74359a5502b7d453242d002d48ed8652948",
+    "checksum": "34ecf2f9f064872d56177c00bf043aa9c8d831974d6c734989e6af6eb44bfb3f",
     "transformationChain": [
       "normalization",
       "transformation"
     ],
     "qualityScore": 100,
     "storageDestination": "etl_storage[curated][fixture][fix-valid-101]",
-    "durationMs": 1,
+    "durationMs": 5,
     "operator": "integration_tester",
     "pipelineVersion": "v1.0.0",
     "stagesStatus": {
       "landing": {
-        "durationMs": 0,
+        "durationMs": 2,
         "success": true
       },
       "validation": {
@@ -113,7 +113,7 @@
         "success": true
       },
       "qualityScoring": {
-        "durationMs": 0,
+        "durationMs": 1,
         "success": true
       },
       "deduplication": {
@@ -129,15 +129,15 @@
         "success": true
       },
       "storage": {
-        "durationMs": 0,
+        "durationMs": 1,
         "success": true
       }
     }
   },
   {
-    "auditId": "audit-fixture-1783084425317-3695",
-    "timestamp": "2026-07-03T13:13:45.317Z",
-    "landingId": "land-fixture-42991d24a35a-1783084425315",
+    "auditId": "audit-fixture-1783088226117-5057",
+    "timestamp": "2026-07-03T14:17:06.117Z",
+    "landingId": "land-fixture-42991d24a35a-1783088226115",
     "providerName": "API-Football",
     "entityType": "fixture",
     "checksum": "42991d24a35af4913b05a77630ed2269bd5852bf0346cf080059c9339653c47e",
