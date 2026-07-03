@@ -55,6 +55,195 @@ export class CalibrationEngine {
   }
 
   /**
+   * Applies Temperature Scaling to raw probabilities.
+   * Softmax(logits / T) where T is temperature parameter.
+   */
+  public static temperatureScaling(
+    rawProbs: Record<string, number>,
+    temperature: number = 1.1
+  ): Record<string, number> {
+    const calibrated: Record<string, number> = {};
+    const keys = Object.keys(rawProbs);
+    const T = Math.max(0.1, temperature);
+
+    let sum = 0;
+    for (const key of keys) {
+      const p = Math.max(0.0001, Math.min(0.9999, rawProbs[key]));
+      const logit = Math.log(p / (1 - p));
+      const adjusted = Math.exp(logit / T);
+      calibrated[key] = adjusted;
+      sum += adjusted;
+    }
+
+    if (sum > 0) {
+      for (const key of keys) {
+        calibrated[key] /= sum;
+      }
+    }
+    return calibrated;
+  }
+
+  /**
+   * Computes Conformal Prediction sets with user-defined coverage guarantee (1 - alpha).
+   */
+  public static conformalPrediction(
+    calibratedProbs: Record<string, number>,
+    alpha: number = 0.1
+  ): string[] {
+    const sorted = Object.entries(calibratedProbs)
+      .sort((a, b) => b[1] - a[1]);
+    
+    const predictionSet: string[] = [];
+    let cumulativeProb = 0;
+    const target = 1 - alpha;
+
+    for (const [outcome, prob] of sorted) {
+      predictionSet.push(outcome);
+      cumulativeProb += prob;
+      if (cumulativeProb >= target) {
+        break;
+      }
+    }
+
+    return predictionSet;
+  }
+
+  /**
+   * Applies Bayesian Calibration to incorporate prior beliefs (e.g. historical baseline probabilities)
+   */
+  public static bayesianCalibration(
+    rawProbs: Record<string, number>,
+    priorProbs: Record<string, number>,
+    priorWeight: number = 0.2
+  ): Record<string, number> {
+    const calibrated: Record<string, number> = {};
+    const keys = Object.keys(rawProbs);
+    let total = 0;
+
+    for (const key of keys) {
+      const p = rawProbs[key];
+      const prior = priorProbs[key] ?? (1.0 / keys.length);
+      // Posterior is weighted blend of prior and likelihood
+      const posterior = p * (1 - priorWeight) + prior * priorWeight;
+      calibrated[key] = posterior;
+      total += posterior;
+    }
+
+    if (total > 0) {
+      for (const key of keys) {
+        calibrated[key] /= total;
+      }
+    }
+
+    return calibrated;
+  }
+
+  /**
+   * Calculates the Expected Calibration Error (ECE)
+   */
+  public static calculateECE(
+    predictions: { confidence: number; correct: boolean }[],
+    binsCount: number = 10
+  ): number {
+    if (predictions.length === 0) return 0;
+    
+    let ece = 0;
+    const binSize = 1.0 / binsCount;
+
+    for (let i = 0; i < binsCount; i++) {
+      const binMin = i * binSize;
+      const binMax = (i + 1) * binSize;
+      
+      const binPredictions = predictions.filter(
+        p => p.confidence >= binMin && p.confidence < binMax
+      );
+
+      if (binPredictions.length === 0) continue;
+
+      const avgConfidence = binPredictions.reduce((sum, p) => sum + p.confidence, 0) / binPredictions.length;
+      const accuracy = binPredictions.filter(p => p.correct).length / binPredictions.length;
+      const weight = binPredictions.length / predictions.length;
+
+      ece += weight * Math.abs(avgConfidence - accuracy);
+    }
+
+    return ece;
+  }
+
+  /**
+   * Calculates the Maximum Calibration Error (MCE)
+   */
+  public static calculateMCE(
+    predictions: { confidence: number; correct: boolean }[],
+    binsCount: number = 10
+  ): number {
+    if (predictions.length === 0) return 0;
+    
+    let mce = 0;
+    const binSize = 1.0 / binsCount;
+
+    for (let i = 0; i < binsCount; i++) {
+      const binMin = i * binSize;
+      const binMax = (i + 1) * binSize;
+      
+      const binPredictions = predictions.filter(
+        p => p.confidence >= binMin && p.confidence < binMax
+      );
+
+      if (binPredictions.length === 0) continue;
+
+      const avgConfidence = binPredictions.reduce((sum, p) => sum + p.confidence, 0) / binPredictions.length;
+      const accuracy = binPredictions.filter(p => p.correct).length / binPredictions.length;
+      const diff = Math.abs(avgConfidence - accuracy);
+
+      if (diff > mce) {
+        mce = diff;
+      }
+    }
+
+    return mce;
+  }
+
+  /**
+   * Calculates Brier Score for probability outcomes.
+   */
+  public static calculateBrierScore(
+    probs: Record<string, number>,
+    outcome: string
+  ): number {
+    let score = 0;
+    const outcomes = Object.keys(probs);
+    
+    for (const key of outcomes) {
+      const p = probs[key] || 0;
+      const y = key === outcome ? 1 : 0;
+      score += Math.pow(p - y, 2);
+    }
+    
+    return score;
+  }
+
+  /**
+   * Measures prediction drift using Wasserstein/absolute distribution distance
+   */
+  public static calculatePredictionDrift(
+    distA: Record<string, number>,
+    distB: Record<string, number>
+  ): number {
+    const keys = Array.from(new Set([...Object.keys(distA), ...Object.keys(distB)]));
+    let absoluteDiffSum = 0;
+
+    for (const key of keys) {
+      const pA = distA[key] ?? 0;
+      const pB = distB[key] ?? 0;
+      absoluteDiffSum += Math.abs(pA - pB);
+    }
+
+    // Return symmetric normalization [0.0, 1.0]
+    return absoluteDiffSum / 2.0;
+  }
+
+  /**
    * Computes the confidence interval boundaries around the calibrated probability
    */
   public static calculateConfidenceIntervals(

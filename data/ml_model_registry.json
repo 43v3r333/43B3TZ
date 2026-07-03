@@ -1,9 +1,9 @@
 [
   {
-    "modelId": "model_1783088226135_lightgbm",
+    "modelId": "model_1783089010689_lightgbm",
     "version": "1.0.0",
     "family": "lightgbm",
-    "trainingDatasetId": "ds_1783088226133_642",
+    "trainingDatasetId": "ds_1783089010687_640",
     "featuresUsed": [
       "feat_elo_rating"
     ],
@@ -78,13 +78,13 @@
         "beta": -0.5
       }
     },
-    "artifactPath": "./artifacts/model_1783088226135_lightgbm.json",
+    "artifactPath": "./artifacts/model_1783089010689_lightgbm.json",
     "gitRevision": "git_rev_v1.2.0_release",
-    "experimentId": "exp_1783088226135_386",
+    "experimentId": "exp_1783089010689_521",
     "championStatus": "champion",
     "approvalStatus": "approved",
     "deploymentStatus": "production",
-    "createdAt": "2026-07-03T14:17:06.135Z",
+    "createdAt": "2026-07-03T14:30:10.689Z",
     "approvedBy": "ADMIN_UNIT_TEST",
     "notes": "Fitted model passed integration parameters."
   }

@@ -80,6 +80,50 @@ class PredictionModelRegistry {
     logger.info(`Successfully rolled back to model ${fallbackModelId} as active ${role} for ${marketType}.`);
   }
 
+  public compareModels(marketType: PredictionMarketType): {
+    marketType: PredictionMarketType;
+    rankings: { modelId: string; name: string; role: ModelDeploymentRole; accuracy: number; brierScore: number; recommendation: string }[];
+    promotableChallenger: string | null;
+  } {
+    const marketModels = this.getModelsByMarket(marketType);
+    const rankings = marketModels.map(m => {
+      const score = m.accuracy - m.brierScore;
+      return {
+        modelId: m.modelId,
+        name: m.name,
+        role: m.role,
+        accuracy: m.accuracy,
+        brierScore: m.brierScore,
+        score,
+        recommendation: "Retain role"
+      };
+    }).sort((a, b) => b.score - a.score);
+
+    const champion = marketModels.find(m => m.role === "champion");
+    let promotableChallenger: string | null = null;
+    
+    if (champion) {
+      const betterChallengers = rankings
+        .filter(r => r.role === "shadow" || r.role === "fallback" || r.role === "experimental")
+        .filter(r => r.accuracy > champion.accuracy && r.brierScore < champion.brierScore);
+        
+      if (betterChallengers.length > 0) {
+        promotableChallenger = betterChallengers[0].modelId;
+        rankings.forEach(r => {
+          if (r.modelId === promotableChallenger) {
+            r.recommendation = "PROMOTION_CANDIDATE: Outperforms active Champion";
+          }
+        });
+      }
+    }
+
+    return {
+      marketType,
+      rankings: rankings.map(({ score, ...rest }) => rest),
+      promotableChallenger
+    };
+  }
+
   public clearAll(): void {
     this.models.clear();
     this.bootstrapBaselineModels();

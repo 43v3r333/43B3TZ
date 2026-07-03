@@ -3,9 +3,9 @@
     {
       "user_id": "usr-unit-01",
       "email": "trader.one@platform.internal",
-      "password_hash": "17cabb3b0e3c406504d8f31104ab5827:46d66190ba23c385518d837a511a223fe8f14e5b43b3be7c3c1f95b5999beecf22d189200029af195e57ec5804a2a2b48c41e64ef9194570a192a31cc29af5a4",
+      "password_hash": "6dc1661d52b4e50e74f5cf8c53640144:4f6a29d1d59351e0c5cb93e2b00822ab097fc59003d6f875b731e91699230cde4c3f54c956122119358e53fc7696067a3742a6c05aa72ef35174b91cce61602b",
       "role": "admin",
-      "created_at": "2026-07-03T14:17:04.753Z"
+      "created_at": "2026-07-03T14:30:09.403Z"
     }
   ],
   "fixtures": [
@@ -85,6 +85,12 @@
       "balance": 10000,
       "currency": "USD",
       "last_updated": "2026-07-03T13:14:25.843Z"
+    },
+    {
+      "user_id": "usr-ca35099b7aac7763",
+      "balance": 10000,
+      "currency": "USD",
+      "last_updated": "2026-07-03T14:17:55.561Z"
     }
   ]
 }
