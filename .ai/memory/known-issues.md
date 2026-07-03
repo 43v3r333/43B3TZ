@@ -19,9 +19,9 @@
 - **Affected Modules**: `backend/scrapers/hollywoodbets.py`
 - **Root Cause**: Bookmaker utilizes Cloudflare anti-bot verification challenges during high-traffic match windows.
 - **Workaround**: Route Hollywoodbets scraping tasks through a premium proxy network with automated headless browser rotation.
-- **Status**: OPEN
-- **Linked Fixes**: PR #142 (under review)
-- **Regression Tests**: `tests/scrapers/test_hollywood_bypass.py`
+- **Status**: **RESOLVED**
+- **Linked Fixes**: Implemented in `/backend/scrapers/hollywoodbets.py` with rotating proxies & stealth browser fallbacks
+- **Regression Tests**: Verified passing via `/tests/scrapers/test_hollywood_bypass.py`
 
 ---
 

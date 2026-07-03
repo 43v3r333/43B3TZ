@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [1.3.1] - 2026-07-02
+### Added
+- **AI Research Lab (Calibration)**: Implemented Platt Scaling and Isotonic Regression (PAVA) in `/server/research/calibration-lab/`.
+- **AI Research API**: Added `/api/v1/research/experiments` and `/api/v1/research/experiments/run` routes.
+- **Database Partitioning Prep (DEBT-002)**: Drafted TimescaleDB hypertable partitioning SQL script `/database/migrations/001_timeseries_partitioning_debt002.sql`.
+- **Ingestion Patch (ISSUE-001)**: Created premium proxy-routing and stealth browser scraper connector `/backend/scrapers/hollywoodbets.py` and regression test `/tests/scrapers/test_hollywood_bypass.py`.
+
+### Changed
+- **Express Server**: Registered `/api/v1/research` API routes in `server.ts`.
+- **UI Research Console**: Upgraded `ResearchLab.tsx` to interact with the API, run trials, and compare ECE and Brier metrics side-by-side.
+
+### Fixed
+- **Known Issues Ledger**: Resolved `ISSUE-001` and validated scraping bypass under high traffic.
+
+---
+
 ## [1.2.0] - 2026-07-01
 ### Added
 - **Sports Intelligence Platform (Sprint 2C)**:

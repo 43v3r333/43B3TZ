@@ -7,9 +7,27 @@
 - **Review Frequency**: Bi-weekly
 - **Cross References**: [Release History](release-history.md), [Completed Features](completed.md)
 - **Revision History**:
+  - `v1.3.1` (2026-07-02): Resolved Ingestion Proxy, Drafted Timeseries Partitioning, and Executed Calibration Research.
   - `v1.3.0` (2026-07-01): Added Enterprise MLOps Control Plane.
   - `v1.2.0` (2026-07-01): Added Sports Intelligence Platform.
   - `v1.0.0` (2026-06-29): Baseline release alignment.
+
+---
+
+## [1.3.1] - 2026-07-02
+
+### Added
+- **AI Research Lab (Calibration)**: Implemented Platt Scaling and Isotonic Regression (PAVA) in `/server/research/calibration-lab/`.
+- **AI Research API**: Added `/api/v1/research/experiments` and `/api/v1/research/experiments/run` routes.
+- **Database Partitioning Prep (DEBT-002)**: Drafted TimescaleDB hypertable partitioning SQL script `/database/migrations/001_timeseries_partitioning_debt002.sql`.
+- **Ingestion Patch (ISSUE-001)**: Created premium proxy-routing and stealth browser scraper connector `/backend/scrapers/hollywoodbets.py` and regression test `/tests/scrapers/test_hollywood_bypass.py`.
+
+### Changed
+- **Express Server**: Registered `/api/v1/research` API routes in `server.ts`.
+- **UI Research Console**: Upgraded `ResearchLab.tsx` to interact with the API, run trials, and compare ECE and Brier metrics side-by-side.
+
+### Fixed
+- **Known Issues Ledger**: Resolved `ISSUE-001` and validated scraping bypass under high traffic.
 
 ---
 
