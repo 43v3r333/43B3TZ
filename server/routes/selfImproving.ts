@@ -8,12 +8,20 @@ import {
   MultiModelDecisionEngine,
   AutonomousResearchAgent,
   BettingPortfolioEngine,
-  SelfLearningEngine
+  SelfLearningEngine,
+  MonteCarloSimulator,
+  CausalReasoningEngine,
+  AIDebateOrchestrator,
+  EdgeDiscoveryEngine,
+  sportsWorldModel,
+  MetaAIAgent,
+  CommercialIntelligenceGenerator
 } from "../predictions/selfImprovingSystem";
 import { operationsManager } from "../operations/opsManager";
 import { aiGovernanceEngine } from "../operations/governanceEngine";
 import { predictionMarketplace } from "../predictions/marketplace/predictionProducts";
 import { dataAcquisitionPlatform } from "../predictions/acquisition/dataAcquisition";
+import { businessPlatform } from "../business/userPlatform";
 import { db } from "../core/db";
 
 const router = express.Router();
@@ -236,6 +244,89 @@ router.post("/acquisition/ingest", async (req, res) => {
     const { source, category, payload } = req.body;
     await dataAcquisitionPlatform.ingestData({ source, category, payload });
     res.json({ success: true, message: "Data ingestion triggered" });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 21. Business: User Account
+router.get("/user-account", async (req, res) => {
+  try {
+    const userId = req.query.userId as string || "exec_001";
+    const account = await businessPlatform.getUserAccount(userId);
+    res.json({ success: true, account });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 14. ASI: Monte Carlo Simulation
+router.post("/asi/simulate", (req, res) => {
+  try {
+    const { homeStrength, awayStrength, iterations } = req.body;
+    const results = MonteCarloSimulator.run(homeStrength || 1.5, awayStrength || 1.2, iterations || 10000);
+    res.json({ success: true, results });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 15. ASI: Causal Reasoning
+router.get("/asi/causal/:fixtureId", (req, res) => {
+  try {
+    const links = CausalReasoningEngine.infer(req.params.fixtureId);
+    res.json({ success: true, links });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 16. ASI: AI Debate
+router.post("/asi/debate", async (req, res) => {
+  try {
+    const { topic } = req.body;
+    const arguments_ = await AIDebateOrchestrator.debate(topic || "Fixture analysis");
+    res.json({ success: true, arguments: arguments_ });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 17. ASI: Edge Discovery
+router.get("/asi/discovery", (req, res) => {
+  try {
+    const edges = EdgeDiscoveryEngine.discoverNewEdges();
+    res.json({ success: true, edges });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 18. ASI: Digital Twin Season Simulation
+router.get("/asi/world-model/simulate/:compId", async (req, res) => {
+  try {
+    const results = await sportsWorldModel.simulateSeason(req.params.compId);
+    res.json({ success: true, results });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 19. ASI: Meta AI Audit
+router.get("/asi/meta/audit", (req, res) => {
+  try {
+    const audit = MetaAIAgent.auditModels();
+    res.json({ success: true, audit });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 20. ASI: Executive Summary
+router.get("/asi/executive-summary", (req, res) => {
+  try {
+    const summary = CommercialIntelligenceGenerator.generateExecutiveSummary();
+    res.json({ success: true, summary });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }

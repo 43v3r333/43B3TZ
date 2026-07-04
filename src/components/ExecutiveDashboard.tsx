@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { 
   Network, Eye, ShieldAlert, TrendingUp, Cpu, Sparkles, BookOpenText, Coins, 
   RefreshCw, Layers, CheckCircle2, AlertTriangle, Play, HelpCircle, 
-  Sliders, UserCheck, Shield, ChevronRight, BarChart3, Wind, Activity, Timer
+  Sliders, UserCheck, Shield, ChevronRight, BarChart3, Wind, Activity, Timer,
+  Brain, Search, MessageSquare, Zap
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
@@ -24,6 +25,15 @@ export default function ExecutiveDashboard() {
   const [governanceReport, setGovernanceReport] = useState<string>("");
   const [userAccount, setUserAccount] = useState<any>(null);
   const [autonomousLogs, setAutonomousLogs] = useState<string[]>([]);
+
+  // ASI States
+  const [causalLinks, setCausalLinks] = useState<any[]>([]);
+  const [simResult, setSimResult] = useState<any>(null);
+  const [debateArgs, setDebateArgs] = useState<any[]>([]);
+  const [discoveredEdges, setDiscoveredEdges] = useState<any[]>([]);
+  const [twinResults, setTwinResults] = useState<any>(null);
+  const [execSummary, setExecSummary] = useState<string>("");
+  const [metaAudit, setMetaAudit] = useState<any>(null);
   
   // Player simulator state
   const [selectedPlayer, setSelectedPlayer] = useState("player_saka");
@@ -72,7 +82,88 @@ export default function ExecutiveDashboard() {
     fetchMarketProducts();
     fetchGovernanceReport();
     fetchUserAccount();
+    fetchASIOverview();
   }, []);
+
+  const fetchASIOverview = async () => {
+    try {
+      const summaryRes = await fetch("/api/v1/self-improving/asi/executive-summary");
+      if (summaryRes.ok) {
+        const data = await summaryRes.json();
+        setExecSummary(data.summary || "");
+      }
+
+      const discoveryRes = await fetch("/api/v1/self-improving/asi/discovery");
+      if (discoveryRes.ok) {
+        const data = await discoveryRes.json();
+        setDiscoveredEdges(data.edges || []);
+      }
+
+      const metaRes = await fetch("/api/v1/self-improving/asi/meta/audit");
+      if (metaRes.ok) {
+        const data = await metaRes.json();
+        setMetaAudit(data.audit || null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const runASISimulation = async () => {
+    try {
+      const res = await fetch("/api/v1/self-improving/asi/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ homeStrength: 1.8, awayStrength: 1.1, iterations: 10000 })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSimResult(data.results);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchCausalReasoning = async (fixtureId: string) => {
+    try {
+      const res = await fetch(`/api/v1/self-improving/asi/causal/${fixtureId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCausalLinks(data.links || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const triggerAIDebate = async (topic: string) => {
+    try {
+      const res = await fetch("/api/v1/self-improving/asi/debate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDebateArgs(data.arguments || []);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const runDigitalTwinSim = async (compId: string) => {
+    try {
+      const res = await fetch(`/api/v1/self-improving/asi/world-model/simulate/${compId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTwinResults(data.results);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Sync tactical fingerprint when team changes
   useEffect(() => {
@@ -290,15 +381,11 @@ export default function ExecutiveDashboard() {
 
   const fetchUserAccount = async () => {
     try {
-      // Simulate user ID
       const res = await fetch("/api/v1/self-improving/user-account?userId=exec_001");
-      // Note: Endpoint not yet in router, but we'll mock or add it
-      setUserAccount({
-        id: "exec_001",
-        email: "executive@43b3tz.ai",
-        tier: "Enterprise",
-        apiUsage: "42,402 / Unlimited"
-      });
+      if (res.ok) {
+        const data = await res.json();
+        setUserAccount(data.account);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -478,7 +565,16 @@ export default function ExecutiveDashboard() {
           }`}
         >
           <Cpu className="w-3.5 h-3.5" />
-          13. AI Command
+          13. ASI Command
+        </button>
+        <button
+          onClick={() => setActiveTab("user")}
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+            activeTab === "user" ? "bg-indigo-600/20 border border-indigo-500/30 text-white" : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          <UserCheck className="w-3.5 h-3.5" />
+          14. User Profile
         </button>
       </div>
 
@@ -1662,62 +1758,280 @@ export default function ExecutiveDashboard() {
         </div>
       )}
 
-      {/* TAB 13: AI COMMAND */}
+      {/* TAB 13: ASI COMMAND CENTER */}
       {activeTab === "autonomous" && (
-        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-6 animate-fadeIn">
-          <div className="space-y-1">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-indigo-400" />
-              AI Orchestration & Autonomous Controls
-            </h3>
-            <p className="text-xs text-slate-400">Manually trigger high-level workflows or monitor the autonomous event bus in real-time.</p>
+        <div className="space-y-6 animate-fadeIn pb-12">
+          {/* Executive Summary Banner */}
+          <div className="bg-gradient-to-r from-indigo-900/40 to-slate-900/40 border border-indigo-500/30 rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+              <Sparkles className="w-24 h-24 text-white" />
+            </div>
+            <div className="relative z-10 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 bg-indigo-500 text-white text-[9px] font-black uppercase rounded tracking-wider animate-pulse">Live ASI intelligence</span>
+                <h3 className="text-lg font-bold text-white">43B3TZ-OS Executive Intelligence</h3>
+              </div>
+              <p className="text-sm text-indigo-100/80 leading-relaxed max-w-3xl italic">
+                "{execSummary || "Generating institutional-grade sports intelligence..."}"
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider font-bold">Manual Overrides</h4>
-              <div className="grid grid-cols-2 gap-3">
-                <button 
-                  onClick={() => triggerAutonomousAction("Global Retraining")}
-                  className="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left space-y-2 transition-all cursor-pointer group"
-                >
-                  <RefreshCw className="w-4 h-4 text-indigo-400 group-hover:rotate-180 transition-transform duration-700" />
-                  <div className="text-[11px] font-bold text-white">Retrain All Models</div>
-                </button>
-                <button 
-                  onClick={() => triggerAutonomousAction("Data Sweep")}
-                  className="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left space-y-2 transition-all cursor-pointer group"
-                >
-                  <Activity className="w-4 h-4 text-emerald-400" />
-                  <div className="text-[11px] font-bold text-white">Ingestion Sweep</div>
-                </button>
-                <button 
-                  onClick={() => triggerAutonomousAction("Optimize Weights")}
-                  className="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left space-y-2 transition-all cursor-pointer group"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <div className="text-[11px] font-bold text-white">Optimize Weights</div>
-                </button>
-                <button 
-                  onClick={() => triggerAutonomousAction("Clear Cache")}
-                  className="p-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left space-y-2 transition-all cursor-pointer group"
-                >
-                  <ShieldAlert className="w-4 h-4 text-rose-400" />
-                  <div className="text-[11px] font-bold text-white">Emergency Stop</div>
-                </button>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Column: World Model & Causal Reasoning */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Causal Reasoning View */}
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Brain className="w-4 h-4 text-emerald-400" />
+                      ASI Phase 2: Causal Reasoning Engine
+                    </h3>
+                    <p className="text-[10px] text-slate-500">Distinguishing causal impact from noise in high-density data streams.</p>
+                  </div>
+                  <button 
+                    onClick={() => fetchCausalReasoning("fix_ars_001")}
+                    className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg transition-colors border border-slate-700 font-bold uppercase cursor-pointer"
+                  >
+                    Run Inference
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {causalLinks.length === 0 && (
+                    <div className="h-24 flex flex-col items-center justify-center border border-dashed border-slate-800 rounded-xl text-slate-600 space-y-2">
+                      <Search className="w-5 h-5 opacity-50" />
+                      <span className="text-[10px]">No causal links inferred yet.</span>
+                    </div>
+                  )}
+                  {causalLinks.map((link, i) => (
+                    <div key={i} className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/60 space-y-3 hover:border-emerald-500/30 transition-colors group">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-1.5 h-8 bg-emerald-500/50 rounded-full group-hover:bg-emerald-400 transition-colors"></div>
+                          <div className="space-y-1">
+                            <div className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-widest">Cause</div>
+                            <div className="text-xs text-white font-bold">{link.cause}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-widest">Confidence</div>
+                          <div className="text-sm font-black text-emerald-400">{(link.strength * 100).toFixed(0)}%</div>
+                        </div>
+                      </div>
+                      <div className="pl-4 space-y-2">
+                        <div className="text-[11px] text-slate-400 leading-relaxed italic border-l-2 border-slate-800 pl-3">
+                          "{link.evidence}"
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px]">
+                          <span className="text-rose-400 font-bold uppercase tracking-tight">Counterfactual:</span>
+                          <span className="text-slate-500">{link.counterfactual}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Monte Carlo Simulator */}
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-indigo-400" />
+                      ASI Phase 3: Scenario Simulator (10k Paths)
+                    </h3>
+                    <p className="text-[10px] text-slate-500">Estimating probability distribution via high-density Poisson iterations.</p>
+                  </div>
+                  <button 
+                    onClick={runASISimulation}
+                    className="text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg transition-colors shadow-lg shadow-indigo-500/20 font-bold uppercase cursor-pointer"
+                  >
+                    Run Simulation
+                  </button>
+                </div>
+
+                {simResult ? (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="md:col-span-1 space-y-4">
+                      <div className="space-y-2">
+                        <div className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-widest">Outcome Probabilities</div>
+                        <div className="space-y-3">
+                          {[
+                            { label: "Home Win", val: simResult.homeWins, color: "bg-indigo-500" },
+                            { label: "Draw", val: simResult.draws, color: "bg-slate-600" },
+                            { label: "Away Win", val: simResult.awayWins, color: "bg-emerald-500" }
+                          ].map((o, i) => (
+                            <div key={i} className="space-y-1">
+                              <div className="flex justify-between text-[10px] font-bold">
+                                <span className="text-slate-400">{o.label}</span>
+                                <span className="text-white">{(o.val * 100).toFixed(1)}%</span>
+                              </div>
+                              <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div className={`h-full ${o.color} transition-all duration-1000`} style={{ width: `${o.val * 100}%` }}></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                        <div className="text-[9px] font-mono text-slate-500 uppercase font-bold">Expected Goals (xG)</div>
+                        <div className="flex justify-between items-baseline">
+                          <span className="text-xl font-black text-white">{simResult.expectedXG.home.toFixed(2)}</span>
+                          <span className="text-xs text-slate-600">vs</span>
+                          <span className="text-xl font-black text-white">{simResult.expectedXG.away.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="md:col-span-2 space-y-3">
+                       <div className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-widest">Score Distribution Density</div>
+                       <div className="h-40 flex items-end justify-between gap-1">
+                         {Object.entries(simResult.goalDist).slice(0, 15).map(([score, count]: [string, any], i) => (
+                           <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
+                             <div className="relative w-full">
+                               <div 
+                                 className="w-full bg-indigo-500/40 group-hover:bg-indigo-400/60 transition-colors rounded-t-sm" 
+                                 style={{ height: `${(count / 10000) * 400}px` }}
+                               ></div>
+                               <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8px] font-mono text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                 {((count / 10000) * 100).toFixed(1)}%
+                               </div>
+                             </div>
+                             <span className="text-[8px] font-mono text-slate-600 rotate-45 mt-1">{score}</span>
+                           </div>
+                         ))}
+                       </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-48 flex items-center justify-center border border-dashed border-slate-800 rounded-xl text-slate-600">
+                    <span className="text-[10px]">Initialize simulator to view outcome distributions.</span>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-xs font-mono text-slate-400 uppercase tracking-wider font-bold">Live Orchestration Stream</h4>
-              <div className="bg-black/40 border border-slate-800 rounded-xl p-4 h-48 overflow-y-auto font-mono text-[10px] space-y-1">
-                {autonomousLogs.length === 0 && <div className="text-slate-600">Waiting for system events...</div>}
-                {autonomousLogs.map((log, i) => (
-                  <div key={i} className={log.includes("completed") ? "text-emerald-400" : "text-slate-300"}>
-                    {log}
+            {/* Right Column: AI Debate & Discovery */}
+            <div className="lg:col-span-4 space-y-6">
+              {/* AI Debate Orchestrator */}
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-4 h-fit">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-amber-400" />
+                    ASI Phase 4: AI Debate Board
+                  </h3>
+                  <p className="text-[10px] text-slate-500">Conflict-based consensus emergence between specialized agents.</p>
+                </div>
+
+                <div className="space-y-4">
+                  {debateArgs.length === 0 && (
+                    <button 
+                      onClick={() => triggerAIDebate("Fixture fix_ars_001 outcome consensus")}
+                      className="w-full py-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl flex flex-col items-center justify-center gap-2 transition-all group cursor-pointer"
+                    >
+                      <Zap className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-amber-200">Initiate Debate</span>
+                    </button>
+                  )}
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                    {debateArgs.map((arg, i) => (
+                      <div key={i} className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 relative">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-mono text-slate-500 uppercase font-bold tracking-wider">{arg.role}</span>
+                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                            arg.stance === "Support" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : 
+                            arg.stance === "Challenge" ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" : "bg-slate-800 text-slate-400"
+                          }`}>
+                            {arg.stance}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed italic">"{arg.argument}"</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-amber-500" style={{ width: `${arg.evidenceWeight * 100}%` }}></div>
+                          </div>
+                          <span className="text-[8px] font-mono text-slate-500">Weight: {arg.evidenceWeight.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
+
+              {/* Edge Discovery Feed */}
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-emerald-400" />
+                    ASI Phase 6: Edge Discovery Feed
+                  </h3>
+                  <p className="text-[10px] text-slate-500">Autonomous identification of non-linear correlations & strategies.</p>
+                </div>
+
+                <div className="space-y-3">
+                  {discoveredEdges.map((edge, i) => (
+                    <div key={i} className="bg-slate-950 p-3 rounded-xl border border-slate-800 border-l-2 border-l-emerald-500/50 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase">{edge.id}</span>
+                        <span className="text-[9px] font-black text-white bg-emerald-500/10 px-2 py-0.5 rounded">EV: +{(edge.potentialEV * 100).toFixed(1)}%</span>
+                      </div>
+                      <p className="text-[10px] text-slate-300 leading-snug">{edge.description}</p>
+                      <div className="flex justify-between items-center text-[8px] text-slate-500 uppercase font-bold tracking-tighter">
+                        <span>Confidence: {(edge.confidence * 100).toFixed(0)}%</span>
+                        <span className="text-emerald-400">Strategy Prototyped</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* TAB 14: USER PROFILE */}
+      {activeTab === "user" && userAccount && (
+        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-8 space-y-8 animate-fadeIn">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-indigo-500/20">
+              {userAccount.email[0].toUpperCase()}
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xl font-black text-white">{userAccount.email}</h3>
+              <div className="flex items-center gap-3">
+                <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 text-[10px] font-bold uppercase rounded border border-indigo-500/20">
+                  {userAccount.subscriptionTier} Tier
+                </span>
+                <span className="text-[10px] text-slate-500 font-mono">ID: {userAccount.id}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-2">
+              <span className="text-[10px] font-mono text-slate-500 uppercase font-bold">Prediction History</span>
+              <div className="text-2xl font-black text-white">{userAccount.predictionHistoryCount.toLocaleString()}</div>
+            </div>
+            <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-2">
+              <span className="text-[10px] font-mono text-slate-500 uppercase font-bold">API Access</span>
+              <div className="text-2xl font-black text-emerald-400">{userAccount.apiAccess ? "Active" : "Disabled"}</div>
+            </div>
+            <div className="bg-slate-950 p-6 rounded-xl border border-slate-800 space-y-2">
+              <span className="text-[10px] font-mono text-slate-500 uppercase font-bold">Inference Speed</span>
+              <div className="text-2xl font-black text-indigo-400">Ultra-Low</div>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t border-slate-800">
+            <h4 className="text-xs font-bold text-white uppercase tracking-wider">Account Settings</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button className="p-4 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-left text-xs text-slate-300 transition-colors">
+                Manage Billing & Subscription
+              </button>
+              <button className="p-4 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-left text-xs text-slate-300 transition-colors">
+                Generate API Credentials
+              </button>
             </div>
           </div>
         </div>
