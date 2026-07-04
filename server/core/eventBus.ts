@@ -10,7 +10,15 @@ export type EventType =
   | "OddsUpdated"
   | "UserAuthenticated"
   | "ResearchStarted"
-  | "ResearchFinished";
+  | "ResearchFinished"
+  | "DataAcquired"
+  | "QualityCheckCompleted"
+  | "ModelTrainingTriggered"
+  | "ModelDeploymentRequested"
+  | "SystemOptimized"
+  | "AnomalousDriftDetected"
+  | "TaskDelegated"
+  | "WorkflowCompleted";
 
 export interface AppEvent<T = any> {
   type: EventType;

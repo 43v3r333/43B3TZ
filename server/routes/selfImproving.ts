@@ -10,6 +10,10 @@ import {
   BettingPortfolioEngine,
   SelfLearningEngine
 } from "../predictions/selfImprovingSystem";
+import { operationsManager } from "../operations/opsManager";
+import { aiGovernanceEngine } from "../operations/governanceEngine";
+import { predictionMarketplace } from "../predictions/marketplace/predictionProducts";
+import { dataAcquisitionPlatform } from "../predictions/acquisition/dataAcquisition";
 import { db } from "../core/db";
 
 const router = express.Router();
@@ -191,6 +195,47 @@ router.post("/self-learning-eval", async (req, res) => {
     );
 
     res.json({ success: true, predictionsCount: mockPredictions.length, driftReport });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 10. Operations Metrics Endpoint
+router.get("/operations/metrics", (req, res) => {
+  try {
+    const metrics = operationsManager.getSystemMetrics();
+    res.json({ success: true, metrics });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 11. Governance Compliance Report
+router.get("/governance/report", async (req, res) => {
+  try {
+    const report = await aiGovernanceEngine.generateComplianceReport();
+    res.json({ success: true, report });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 12. Prediction Marketplace Products
+router.get("/marketplace/products", (req, res) => {
+  try {
+    const products = predictionMarketplace.getTopPredictions();
+    res.json({ success: true, products });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 13. Data Acquisition Ingest (Manual Trigger)
+router.post("/acquisition/ingest", async (req, res) => {
+  try {
+    const { source, category, payload } = req.body;
+    await dataAcquisitionPlatform.ingestData({ source, category, payload });
+    res.json({ success: true, message: "Data ingestion triggered" });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
   }

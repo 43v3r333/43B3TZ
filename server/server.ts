@@ -35,6 +35,7 @@ import decisionRouter from "./routes/decision";
 import researchRouter from "./routes/research";
 import selfImprovingRouter from "./routes/selfImproving";
 import { MarketScheduler } from "./market/scheduler";
+import { bootstrapAutonomousOS } from "./autonomous/index";
 
 import { errorHandler } from "./middleware/errorHandler";
 import { correlationMiddleware } from "./logging/Correlation";
@@ -87,6 +88,9 @@ async function startServer() {
 
   // Initialize Enterprise Market Intelligence Platform
   MarketScheduler.bootstrap();
+
+  // Initialize Autonomous AI Sports Operating System
+  await bootstrapAutonomousOS();
 
   const app = express();
   app.use(express.json());
