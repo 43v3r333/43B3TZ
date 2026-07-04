@@ -34,6 +34,7 @@ import marketRouter from "./routes/market";
 import decisionRouter from "./routes/decision";
 import researchRouter from "./routes/research";
 import selfImprovingRouter from "./routes/selfImproving";
+import businessRouter from "./routes/business";
 import { MarketScheduler } from "./market/scheduler";
 import { bootstrapAutonomousOS } from "./autonomous/index";
 
@@ -117,6 +118,7 @@ async function startServer() {
   app.use("/api/v1/decision", decisionRouter);
   app.use("/api/v1/research", researchRouter);
   app.use("/api/v1/self-improving", selfImprovingRouter);
+  app.use("/api/v1/business", businessRouter);
 
   // Expose system logs for live inspection in React terminal UI
   app.get("/api/v1/admin/logs", (req, res) => {

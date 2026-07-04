@@ -50,8 +50,6 @@ export class SportsWorldModel {
   }
 }
 
-export const sportsWorldModel = SportsWorldModel.getInstance();
-
 // ============================================================================
 // ASI PHASE 2: CAUSAL REASONING ENGINE
 // ============================================================================
@@ -948,3 +946,5 @@ export class SelfLearningEngine {
     };
   }
 }
+
+export const sportsWorldModel = SportsWorldModel.getInstance();
