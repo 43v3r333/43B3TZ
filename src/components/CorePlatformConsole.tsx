@@ -32,6 +32,7 @@ import MarketIntelligenceDashboard from "./MarketIntelligenceDashboard";
 import DecisionIntelligenceDashboard from "./decision/DecisionIntelligenceDashboard";
 import OperationsCenter from "./operations/OperationsCenter";
 import ResearchLab from "./research/ResearchLab";
+import ExecutiveDashboard from "./ExecutiveDashboard";
 
 interface LogEntry {
   timestamp: string;
@@ -43,7 +44,7 @@ interface LogEntry {
 
 export default function CorePlatformConsole() {
   // Navigation inside the Console Tab
-  const [activeSubTab, setActiveSubTab] = useState<"system" | "database" | "redis" | "auth" | "providers" | "etl" | "intel" | "mlops" | "factory" | "pred_intel" | "market_intel" | "decision_intel" | "operations" | "research">("research");
+  const [activeSubTab, setActiveSubTab] = useState<"system" | "database" | "redis" | "auth" | "providers" | "etl" | "intel" | "mlops" | "factory" | "pred_intel" | "market_intel" | "decision_intel" | "operations" | "research" | "executive">("executive");
 
   // Health and System States
   const [systemHealth, setSystemHealth] = useState<any>(null);
@@ -225,6 +226,17 @@ export default function CorePlatformConsole() {
       {/* Internal Sub-navigation Tabs */}
       <div className="flex border-b border-slate-800" id="console-sub-navigation">
         <button
+          onClick={() => setActiveSubTab("executive")}
+          className={`px-5 py-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 ${
+            activeSubTab === "executive"
+              ? "border-emerald-500 text-white font-bold bg-emerald-500/5"
+              : "border-transparent text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+          Executive Dashboard
+        </button>
+        <button
           onClick={() => setActiveSubTab("system")}
           className={`px-5 py-3.5 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 ${
             activeSubTab === "system"
@@ -381,7 +393,9 @@ export default function CorePlatformConsole() {
       </div>
 
       {/* SUB-TAB CONTENTS */}
-      {activeSubTab === "providers" ? (
+      {activeSubTab === "executive" ? (
+        <ExecutiveDashboard />
+      ) : activeSubTab === "providers" ? (
         <ProviderPlatformDashboard />
       ) : activeSubTab === "etl" ? (
         <EtlPlatformDashboard />

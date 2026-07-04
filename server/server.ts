@@ -33,6 +33,7 @@ import predictionsRouter from "./routes/predictions";
 import marketRouter from "./routes/market";
 import decisionRouter from "./routes/decision";
 import researchRouter from "./routes/research";
+import selfImprovingRouter from "./routes/selfImproving";
 import { MarketScheduler } from "./market/scheduler";
 
 import { errorHandler } from "./middleware/errorHandler";
@@ -111,6 +112,7 @@ async function startServer() {
   app.use("/api/v1/market", marketRouter);
   app.use("/api/v1/decision", decisionRouter);
   app.use("/api/v1/research", researchRouter);
+  app.use("/api/v1/self-improving", selfImprovingRouter);
 
   // Expose system logs for live inspection in React terminal UI
   app.get("/api/v1/admin/logs", (req, res) => {
