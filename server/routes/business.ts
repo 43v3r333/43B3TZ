@@ -4,6 +4,7 @@ import { aiGovernanceEngine } from "../operations/governanceEngine";
 import { providerManager } from "../intelligence/data/providerManager";
 import { experimentRegistry } from "../research/experimentRegistry";
 import { portfolioOptimizer } from "../decision/portfolioOptimizer";
+import { reasoningService } from "../business/reasoningService";
 
 const router = Router();
 
@@ -54,6 +55,34 @@ router.get("/governance/compliance", async (req, res, next) => {
   try {
     const report = await aiGovernanceEngine.generateComplianceReport();
     res.json({ report });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/reasoning", async (req, res, next) => {
+  try {
+    const { fixture, sport } = req.body;
+    if (!fixture || !sport) {
+      res.status(400).json({ error: "fixture and sport parameters are required" });
+      return;
+    }
+    const data = await reasoningService.generateSportsReasoning(fixture, sport);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/briefing", async (req, res, next) => {
+  try {
+    const department = req.query.department as string;
+    if (!department) {
+      res.status(400).json({ error: "department parameter is required" });
+      return;
+    }
+    const data = await reasoningService.generateDepartmentBriefing(department);
+    res.json(data);
   } catch (err) {
     next(err);
   }
